@@ -48,10 +48,11 @@ const sortTaskList = (tasks, sortBy) => {
 const Tasks = () => {
   const location = useLocation();
   const [tasks, setTasks] = useState([]);
-  const [form, setForm] = useState({ title: '', description: '', priority: 'medium', status: 'todo', dueDate: '' });
+  const [form, setForm] = useState({ title: '', description: '', priority: 'medium', status: 'todo', dueDate: '', tags: [] });
+  const [tagInput, setTagInput] = useState('');
   const [notification, setNotification] = useState(null);
   const [editingId, setEditingId] = useState(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(location.state?.search || '');
   const [statusFilter, setStatusFilter] = useState(location.state?.status || '');
   const [priorityFilter, setPriorityFilter] = useState('');
   const [sortBy, setSortBy] = useState('dueDateAsc');
@@ -74,8 +75,13 @@ const Tasks = () => {
   useEffect(() => {
     // Update the filter and fetch tasks if navigated with a status state from Dashboard
     const navStatus = location.state?.status || '';
+    const navSearch = location.state?.search || '';
     setStatusFilter(navStatus);
-    fetchTasks({ status: navStatus });
+    
+    if (navSearch !== search) {
+      setSearch(navSearch);
+    }
+    fetchTasks({ status: navStatus, search: navSearch });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.key]); // Use location.key to detect new incoming navigation without causing loops
 
@@ -84,8 +90,13 @@ const Tasks = () => {
   };
 
   const clearForm = () => {
-    setForm({ title: '', description: '', priority: 'medium', status: 'todo', dueDate: '' });
+    setForm({ title: '', description: '', priority: 'medium', status: 'todo', dueDate: '', tags: [] });
+    setTagInput('');
     setEditingId(null);
+  };
+  
+  const handleRemoveTag = (tagToRemove) => {
+    setForm((prev) => ({ ...prev, tags: prev.tags.filter((t) => t !== tagToRemove) }));
   };
 
   const handleSave = async (e) => {
@@ -129,6 +140,7 @@ const Tasks = () => {
       priority: task.priority,
       status: task.status,
       dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
+      tags: task.tags || [],
     });
     setEditingId(task._id);
   };
@@ -274,6 +286,36 @@ const Tasks = () => {
                   className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Tags</label>
+                <p className="text-xs text-slate-500 mb-2">Type a tag and press Enter to add it.</p>
+                {form.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {form.tags.map((tag) => (
+                      <span key={tag} className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                        #{tag}
+                        <button type="button" onClick={() => handleRemoveTag(tag)} className="hover:text-blue-900 ml-1">&times;</button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <input
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault(); // Prevent form submission
+                      const trimmed = tagInput.trim();
+                      if (trimmed && !form.tags.includes(trimmed)) {
+                        setForm(prev => ({ ...prev, tags: [...prev.tags, trimmed] }));
+                        setTagInput('');
+                      }
+                    }
+                  }}
+                  placeholder="e.g. frontend"
+                  className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white"
+                />
+              </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <button
                   type="submit"
@@ -401,6 +443,13 @@ const Tasks = () => {
                     </button>
                   </div>
                   <p className="mt-4 text-slate-600">{task.description || 'No description added yet.'}</p>
+                  {task.tags && task.tags.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {task.tags.map((tag) => (
+                        <span key={tag} className="rounded-full bg-slate-100 border border-slate-200 px-2 py-1 text-xs font-medium text-slate-600">#{tag}</span>
+                      ))}
+                    </div>
+                  )}
                   <div className="mt-5 flex flex-wrap gap-3">
                     <button
                       onClick={() => handleEdit(task)}

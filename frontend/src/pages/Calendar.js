@@ -52,50 +52,52 @@ const TaskCalendar = ({ onEditTask }) => {
   }
 
   return (
-    <div className="h-full">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
-        <p className="text-gray-600">View and manage your tasks by date</p>
-      </div>
+    <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl space-y-6">
+        <div className="rounded-[2rem] bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-200">
+          <div className="flex flex-col gap-4">
+            <h1 className="text-3xl font-semibold text-slate-900">Calendar</h1>
+            <p className="text-slate-600">View and manage your tasks by date.</p>
+          </div>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          <div className="bg-white p-6 rounded-[2rem] shadow-xl shadow-slate-200/50 ring-1 ring-slate-200">
           <Calendar
             onChange={setSelectedDate}
             value={selectedDate}
             tileContent={tileContent}
-            className="w-full"
+              className="w-full border-none font-sans"
           />
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Tasks for {selectedDate.toLocaleDateString()}
-          </h2>
+          <div className="bg-white p-6 rounded-[2rem] shadow-xl shadow-slate-200/50 ring-1 ring-slate-200">
+            <h2 className="text-xl font-semibold text-slate-900 mb-6">Tasks for {selectedDate.toLocaleDateString()}</h2>
+            
           {selectedDateTasks.length === 0 ? (
-            <p className="text-gray-500">No tasks for this date</p>
+              <p className="text-slate-500">No tasks for this date. Enjoy your day!</p>
           ) : (
             <div className="space-y-3">
               {selectedDateTasks.map((task) => (
                 <div
                   key={task._id}
-                  className="p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                    className="p-5 border border-slate-200 rounded-3xl bg-slate-50 cursor-pointer hover:bg-slate-100 hover:shadow-sm transition-all"
                   onClick={() => onEditTask(task)}
                 >
-                  <h3 className="font-medium text-gray-900">{task.title}</h3>
-                  <p className="text-sm text-gray-600 mt-1">{task.description}</p>
+                    <h3 className="font-semibold text-slate-900">{task.title}</h3>
+                    <p className="text-sm text-slate-600 mt-2">{task.description}</p>
                   <div className="flex items-center justify-between mt-2">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      task.priority === 'high' ? 'bg-red-100 text-red-800' :
-                      task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-green-100 text-green-800'
+                        task.priority === 'high' ? 'bg-rose-100 text-rose-800' :
+                        task.priority === 'medium' ? 'bg-amber-100 text-amber-800' :
+                        'bg-emerald-100 text-emerald-800'
                     }`}>
                       {task.priority}
                     </span>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      task.status === 'done' ? 'bg-green-100 text-green-800' :
-                      task.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-gray-100 text-gray-800'
+                        task.status === 'done' ? 'bg-emerald-100 text-emerald-800' :
+                        task.status === 'in-progress' ? 'bg-amber-100 text-amber-800' :
+                        'bg-slate-200 text-slate-800'
                     }`}>
                       {task.status}
                     </span>
@@ -104,6 +106,7 @@ const TaskCalendar = ({ onEditTask }) => {
               ))}
             </div>
           )}
+        </div>
         </div>
       </div>
     </div>
