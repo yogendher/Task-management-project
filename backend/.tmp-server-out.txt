@@ -1,0 +1,7 @@
+◇ injected env (3) from .env // tip: ⌘ enable debugging { debug: true }
+AuthRoutes loaded
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+Boot file: C:\Users\Yogi\Desktop\mern_project\backend\server.js
+Node entry: C:\Users\Yogi\Desktop\mern_project\backend\server.js
+MONGO URI: mongodb+srv://yogi:yogi123@cluster0.ycix8cn.mongodb.net/mern?retryWrites=true&w=majority
+Server running on port 5000

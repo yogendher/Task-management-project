@@ -1,0 +1,5 @@
+◇ injected env (3) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+Boot file: C:\Users\Yogi\Desktop\mern_project\backend\server.js
+Node entry: C:\Users\Yogi\Desktop\mern_project\backend\server.js
+MongoDB Connected
+Server running on port 5000
