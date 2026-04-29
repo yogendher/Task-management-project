@@ -29,30 +29,56 @@ const Register = () => {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <div className="auth-header">
-          <h2>Create your account</h2>
-          <p>Join TaskFlow and manage your tasks with ease.</p>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-10">
+      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 p-8 shadow-xl shadow-slate-200/40">
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-semibold text-slate-900">Create your account</h2>
+          <p className="mt-3 text-sm text-slate-500">Join TaskFlow and manage your tasks with ease.</p>
         </div>
-        <form onSubmit={handleSubmit} className="auth-form">
-          <label>
-            Name
-            <input name="name" value={form.name} onChange={handleChange} required />
-          </label>
-          <label>
-            Email
-            <input name="email" type="email" value={form.email} onChange={handleChange} required />
-          </label>
-          <label>
-            Password
-            <input name="password" type="password" value={form.password} onChange={handleChange} required minLength={6} />
-          </label>
-          <button type="submit">Register</button>
-          {message && <p className="error">{message}</p>}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Name</label>
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Email</label>
+            <input
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
+            <input
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              minLength={6}
+              className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full rounded-2xl bg-blue-600 px-4 py-3 text-white font-semibold transition hover:bg-blue-700"
+          >
+            Register
+          </button>
+          {message && <p className="text-sm text-red-600 text-center">{message}</p>}
         </form>
-        <p className="auth-help">
-          Already have an account? <Link to="/login">Login now</Link>
+        <p className="mt-6 text-center text-sm text-slate-500">
+          Already have an account? <Link to="/login" className="font-semibold text-blue-600 hover:text-blue-700">Login now</Link>
         </p>
       </div>
     </div>
