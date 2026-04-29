@@ -1,5 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createTask, deleteTask, getTasks, updateTask } from '../services/api';
+
+const priorityOrder = { high: 1, medium: 2, low: 3 };
+
+const sortTaskList = (tasks, sortBy) => {
+  const sorted = [...tasks];
+
+  switch (sortBy) {
+    case 'priority':
+      return sorted.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+    case 'createdAtDesc':
+      return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    case 'createdAtAsc':
+      return sorted.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    case 'dueDateDesc':
+      return sorted.sort((a, b) => new Date(b.dueDate || 0) - new Date(a.dueDate || 0));
+    default:
+      return sorted.sort((a, b) => new Date(a.dueDate || 0) - new Date(b.dueDate || 0));
+  }
+};
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -9,19 +28,20 @@ const Tasks = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
+  const [sortBy, setSortBy] = useState('dueDateAsc');
 
-  const fetchTasks = async (params = {}) => {
+  const fetchTasks = useCallback(async (params = {}) => {
     try {
       const response = await getTasks(params);
-      setTasks(response.data.tasks);
+      setTasks(sortTaskList(response.data.tasks, sortBy));
     } catch (error) {
       setMessage(error.response?.data?.message || 'Unable to load tasks');
     }
-  };
+  }, [sortBy]);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -39,11 +59,11 @@ const Tasks = () => {
     try {
       if (editingId) {
         const response = await updateTask(editingId, form);
-        setTasks(tasks.map((task) => (task._id === editingId ? response.data.task : task)));
+        setTasks((current) => current.map((task) => (task._id === editingId ? response.data.task : task)));
         clearForm();
       } else {
         const response = await createTask(form);
-        setTasks([response.data.task, ...tasks]);
+        setTasks((current) => sortTaskList([response.data.task, ...current], sortBy));
         clearForm();
       }
     } catch (error) {
@@ -77,7 +97,7 @@ const Tasks = () => {
     const nextStatus = task.status === 'completed' ? 'pending' : 'completed';
     try {
       const response = await updateTask(task._id, { status: nextStatus });
-      setTasks(tasks.map((item) => (item._id === task._id ? response.data.task : item)));
+      setTasks((current) => current.map((item) => (item._id === task._id ? response.data.task : item)));
     } catch (error) {
       setMessage(error.response?.data?.message || 'Unable to update task');
     }
@@ -86,7 +106,7 @@ const Tasks = () => {
   const handleDelete = async (id) => {
     try {
       await deleteTask(id);
-      setTasks(tasks.filter((task) => task._id !== id));
+      setTasks((current) => current.filter((task) => task._id !== id));
       if (editingId === id) {
         clearForm();
       }
@@ -95,10 +115,33 @@ const Tasks = () => {
     }
   };
 
+  const handleSortChange = (event) => {
+    const nextSort = event.target.value;
+    setSortBy(nextSort);
+    setTasks((current) => sortTaskList(current, nextSort));
+  };
+
   return (
     <div className="tasks-page">
+      <div className="page-title">
+        <h1>Tasks</h1>
+        <p>Organize your tasks with filters, sorting, and priority controls.</p>
+      </div>
+
+      <div className="task-header">
+        <div>
+          <h2>{editingId ? 'Edit Task' : 'Create a Task'}</h2>
+          <p>{editingId ? 'Update your task details' : 'Add a new task to your list.'}</p>
+        </div>
+        <div className="task-header-actions">
+          <span className="task-count">{tasks.length} tasks</span>
+          <button className="secondary-button" type="button" onClick={clearForm}>
+            Reset Form
+          </button>
+        </div>
+      </div>
+
       <div className="tasks-panel">
-        <h2>{editingId ? 'Edit Task' : 'Create a Task'}</h2>
         <form className="task-form" onSubmit={handleSave}>
           <label>
             Title
@@ -131,16 +174,13 @@ const Tasks = () => {
         </form>
         {message && <p className="error">{message}</p>}
       </div>
+
       <div className="tasks-list">
         <div className="task-filters">
           <div className="task-filter-group">
             <label>
               Search
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by title"
-              />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by title" />
             </label>
           </div>
           <div className="task-filter-group">
@@ -165,6 +205,18 @@ const Tasks = () => {
               </select>
             </label>
           </div>
+          <div className="task-filter-group">
+            <label>
+              Sort by
+              <select value={sortBy} onChange={handleSortChange}>
+                <option value="dueDateAsc">Due Date ↑</option>
+                <option value="dueDateDesc">Due Date ↓</option>
+                <option value="priority">Priority</option>
+                <option value="createdAtDesc">Newest</option>
+                <option value="createdAtAsc">Oldest</option>
+              </select>
+            </label>
+          </div>
           <div className="task-filter-actions">
             <button type="button" onClick={handleSearch}>
               Apply
@@ -174,19 +226,19 @@ const Tasks = () => {
             </button>
           </div>
         </div>
-        <h2>Your Tasks</h2>
+
         {tasks.length === 0 ? (
           <p>No tasks yet. Create one to get started.</p>
         ) : (
           tasks.map((task) => (
-            <div key={task._id} className={`task-card ${task.status}`}>
+            <div key={task._id} className="task-card">
               <div className="task-card-header">
                 <h3>{task.title}</h3>
                 <span className={`priority ${task.priority}`}>{task.priority}</span>
               </div>
               <p>{task.description || 'No description provided.'}</p>
               <div className="task-card-meta">
-                <span>{task.status}</span>
+                <span className={`status-pill ${task.status}`}>{task.status}</span>
                 <span>{task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No due date'}</span>
               </div>
               <div className="task-card-actions">
