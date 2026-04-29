@@ -31,6 +31,9 @@ const Register = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-10">
       <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 p-8 shadow-xl shadow-slate-200/40">
+        <div className="mb-6 rounded-3xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-600">
+          Already have a demo account? Use <span className="font-semibold text-slate-900">lucky@gmail.com</span> / <span className="font-semibold text-slate-900">lucky123</span> to login.
+        </div>
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-semibold text-slate-900">Create your account</h2>
           <p className="mt-3 text-sm text-slate-500">Join TaskFlow and manage your tasks with ease.</p>
