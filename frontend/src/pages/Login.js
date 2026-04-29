@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
@@ -30,19 +30,27 @@ const Login = () => {
 
   return (
     <div className="auth-page">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit} className="auth-form">
-        <label>
-          Email
-          <input name="email" type="email" value={form.email} onChange={handleChange} required />
-        </label>
-        <label>
-          Password
-          <input name="password" type="password" value={form.password} onChange={handleChange} required />
-        </label>
-        <button type="submit">Login</button>
-        {message && <p className="error">{message}</p>}
-      </form>
+      <div className="auth-card">
+        <div className="auth-header">
+          <h2>Welcome back</h2>
+          <p>Login to access your tasks and stay on top of your work.</p>
+        </div>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <label>
+            Email
+            <input name="email" type="email" value={form.email} onChange={handleChange} required />
+          </label>
+          <label>
+            Password
+            <input name="password" type="password" value={form.password} onChange={handleChange} required />
+          </label>
+          <button type="submit">Login</button>
+          {message && <p className="error">{message}</p>}
+        </form>
+        <p className="auth-help">
+          New here? <Link to="/register">Create an account</Link>
+        </p>
+      </div>
     </div>
   );
 };

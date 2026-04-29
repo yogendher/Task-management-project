@@ -12,12 +12,15 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="App">
-          <nav className="nav-bar">
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/tasks">Tasks</Link>
-          </nav>
+          <header className="app-header">
+            <div className="brand">TaskFlow</div>
+            <nav className="nav-bar">
+              <Link to="/login">Login</Link>
+              <Link to="/register">Register</Link>
+              <Link to="/dashboard">Dashboard</Link>
+              <Link to="/tasks">Tasks</Link>
+            </nav>
+          </header>
           <div className="content-container">
             <Routes>
               <Route path="/login" element={<Login />} />

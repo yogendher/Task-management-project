@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { registerUser } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
@@ -30,23 +30,31 @@ const Register = () => {
 
   return (
     <div className="auth-page">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit} className="auth-form">
-        <label>
-          Name
-          <input name="name" value={form.name} onChange={handleChange} required />
-        </label>
-        <label>
-          Email
-          <input name="email" type="email" value={form.email} onChange={handleChange} required />
-        </label>
-        <label>
-          Password
-          <input name="password" type="password" value={form.password} onChange={handleChange} required minLength={6} />
-        </label>
-        <button type="submit">Register</button>
-        {message && <p className="error">{message}</p>}
-      </form>
+      <div className="auth-card">
+        <div className="auth-header">
+          <h2>Create your account</h2>
+          <p>Join TaskFlow and manage your tasks with ease.</p>
+        </div>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <label>
+            Name
+            <input name="name" value={form.name} onChange={handleChange} required />
+          </label>
+          <label>
+            Email
+            <input name="email" type="email" value={form.email} onChange={handleChange} required />
+          </label>
+          <label>
+            Password
+            <input name="password" type="password" value={form.password} onChange={handleChange} required minLength={6} />
+          </label>
+          <button type="submit">Register</button>
+          {message && <p className="error">{message}</p>}
+        </form>
+        <p className="auth-help">
+          Already have an account? <Link to="/login">Login now</Link>
+        </p>
+      </div>
     </div>
   );
 };
