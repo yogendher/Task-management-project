@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { getTasks } from '../services/api';
+import { Link } from 'react-router-dom';
 
 const statusLabel = {
   todo: 'To Do',
@@ -66,22 +67,34 @@ const Dashboard = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-[2rem] bg-white p-6 shadow-lg shadow-slate-200/40 ring-1 ring-slate-200">
+          <Link 
+            to="/tasks"
+            className="block rounded-[2rem] bg-white p-6 shadow-lg shadow-slate-200/40 ring-1 ring-slate-200 cursor-pointer hover:bg-slate-50 hover:shadow-xl transition-all"
+          >
             <p className="text-sm font-medium text-slate-500">Total Tasks</p>
             <p className="mt-4 text-3xl font-semibold text-slate-900">{totalTasks}</p>
-          </div>
-          <div className="rounded-[2rem] bg-white p-6 shadow-lg shadow-slate-200/40 ring-1 ring-slate-200">
+          </Link>
+          <Link 
+            to="/tasks" state={{ status: 'done' }}
+            className="block rounded-[2rem] bg-white p-6 shadow-lg shadow-slate-200/40 ring-1 ring-slate-200 cursor-pointer hover:bg-slate-50 hover:shadow-xl transition-all"
+          >
             <p className="text-sm font-medium text-slate-500">Completed</p>
             <p className="mt-4 text-3xl font-semibold text-green-600">{completed}</p>
-          </div>
-          <div className="rounded-[2rem] bg-white p-6 shadow-lg shadow-slate-200/40 ring-1 ring-slate-200">
+          </Link>
+          <Link 
+            to="/tasks" state={{ status: 'in-progress' }}
+            className="block rounded-[2rem] bg-white p-6 shadow-lg shadow-slate-200/40 ring-1 ring-slate-200 cursor-pointer hover:bg-slate-50 hover:shadow-xl transition-all"
+          >
             <p className="text-sm font-medium text-slate-500">In Progress</p>
             <p className="mt-4 text-3xl font-semibold text-amber-600">{inProgress}</p>
-          </div>
-          <div className="rounded-[2rem] bg-white p-6 shadow-lg shadow-slate-200/40 ring-1 ring-slate-200">
+          </Link>
+          <Link 
+            to="/tasks" state={{ status: 'todo' }}
+            className="block rounded-[2rem] bg-white p-6 shadow-lg shadow-slate-200/40 ring-1 ring-slate-200 cursor-pointer hover:bg-slate-50 hover:shadow-xl transition-all"
+          >
             <p className="text-sm font-medium text-slate-500">To Do</p>
             <p className="mt-4 text-3xl font-semibold text-sky-700">{todoCount}</p>
-          </div>
+          </Link>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-3">

@@ -71,10 +71,12 @@ const Tasks = () => {
   }, [sortBy, triggerNotification]);
 
   useEffect(() => {
-    // Use the initial status from location state if available
-    fetchTasks({ status: location.state?.status || '' });
+    // Update the filter and fetch tasks if navigated with a status state from Dashboard
+    const navStatus = location.state?.status || '';
+    setStatusFilter(navStatus);
+    fetchTasks({ status: navStatus });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run only on mount to prevent overriding filters on sort change
+  }, [location.key]); // Use location.key to detect new incoming navigation without causing loops
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
