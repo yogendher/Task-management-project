@@ -56,10 +56,9 @@ async function seedDemoAccount() {
   }
 
   const existingTasks = await Task.find({ user: user._id });
-  if (existingTasks.length > 0) {
-    console.log(`Demo user ${email} already has ${existingTasks.length} tasks. Skipping seed.`);
-    return; // Prevent adding duplicates or overriding user-deleted tasks
-  }
+  
+  // Always reset the demo user's tasks to ensure the 10 sample tasks in different states are present
+  await Task.deleteMany({ user: user._id });
 
   const taskSamples = [
     {
