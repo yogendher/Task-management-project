@@ -1,13 +1,19 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
-  const [message, setMessage] = useState(null);
+  const [notification, setNotification] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { login, setError } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const triggerNotification = useCallback((type, text) => {
+    setNotification({ type, text });
+    setTimeout(() => setNotification(null), 4000);
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,21 +21,44 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage(null);
+    setNotification(null);
     setError(null);
+    setIsSubmitting(true);
 
     try {
       const response = await loginUser(form);
       const { token, user } = response.data;
-      login(token, user);
-      navigate('/dashboard');
+      
+      triggerNotification('success', 'Login successful! Redirecting...');
+      setTimeout(() => {
+        login(token, user);
+        navigate('/dashboard');
+      }, 1500);
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Login failed');
+      triggerNotification('error', error.response?.data?.message || 'Login failed');
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-10 relative">
+      {/* Notification Toast */}
+      {notification && (
+        <div className={`fixed top-6 right-6 z-50 max-w-sm w-full p-4 rounded-2xl shadow-xl border transition-all duration-300 ${
+          notification.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800'
+        }`}>
+          <div className="flex items-center gap-3">
+            <div className={`flex items-center justify-center shrink-0 w-8 h-8 rounded-full ${notification.type === 'success' ? 'bg-emerald-200 text-emerald-700' : 'bg-rose-200 text-rose-700'}`}>
+              {notification.type === 'success' ? '✓' : '✕'}
+            </div>
+            <div>
+              <p className="font-semibold">{notification.type === 'success' ? 'Success' : 'Error'}</p>
+              <p className="text-sm opacity-90">{notification.text}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 p-8 shadow-xl shadow-slate-200/40">
         <div className="mb-6 rounded-3xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-600">
           Demo login: <span className="font-semibold text-slate-900">lucky@gmail.com</span> /
@@ -64,11 +93,21 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full rounded-2xl bg-blue-600 px-4 py-3 text-white font-semibold transition hover:bg-blue-700"
+            disabled={isSubmitting}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            Login
+            {isSubmitting ? (
+              <>
+                <svg className="h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Loading...
+              </>
+            ) : (
+              'Login'
+            )}
           </button>
-          {message && <p className="text-sm text-red-600 text-center">{message}</p>}
         </form>
         <p className="mt-6 text-center text-sm text-slate-500">
           New here? <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-700">Create an account</Link>
