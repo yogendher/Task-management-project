@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Tasks from './pages/Tasks';
 import './App.css';
 
 function App() {
@@ -14,6 +15,8 @@ function App() {
           <nav className="nav-bar">
             <Link to="/login">Login</Link>
             <Link to="/register">Register</Link>
+            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/tasks">Tasks</Link>
           </nav>
           <div className="content-container">
             <Routes>
@@ -24,6 +27,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/tasks"
+                element={
+                  <ProtectedRoute>
+                    <Tasks />
                   </ProtectedRoute>
                 }
               />

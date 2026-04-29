@@ -22,6 +22,7 @@ This app is designed to showcase a full-stack MERN project with:
 - User registration (`POST /api/auth/register`)
 - User login (`POST /api/auth/login`)
 - Protected user profile route (`GET /api/auth/profile`)
+- Task management CRUD API (`GET /api/tasks`, `POST /api/tasks`, `PUT /api/tasks/:id`, `DELETE /api/tasks/:id`)
 
 ## Structure
 

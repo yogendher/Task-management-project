@@ -14,8 +14,8 @@ console.log("Node entry:", require.main?.filename || process.argv[1]);
 app.use(cors());
 app.use(express.json());
 
-app.use("/", authRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/tasks", require('./routes/taskRoutes'));
 
 // test route
 app.get("/", (req, res) => {

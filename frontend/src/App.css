@@ -80,3 +80,94 @@
   color: white;
   cursor: pointer;
 }
+
+.tasks-page {
+  width: min(980px, 100%);
+  display: grid;
+  gap: 1.5rem;
+}
+
+.tasks-panel,
+.tasks-list {
+  background: white;
+  padding: 1.75rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.task-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.task-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.task-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.task-card.completed {
+  background: #ecfdf5;
+}
+
+.task-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.priority {
+  text-transform: capitalize;
+  font-weight: 700;
+}
+
+.priority.low {
+  color: #2f855a;
+}
+
+.priority.medium {
+  color: #d97706;
+}
+
+.priority.high {
+  color: #b91c1c;
+}
+
+.task-card-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #6b7280;
+  margin-top: 0.75rem;
+}
+
+.task-card-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.task-card-actions button {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.task-card-actions button.delete-button {
+  background: #ef4444;
+  color: white;
+}
+
+.task-card-actions button:not(.delete-button) {
+  background: #2563eb;
+  color: white;
+}
