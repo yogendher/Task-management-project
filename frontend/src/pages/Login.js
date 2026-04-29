@@ -60,10 +60,6 @@ const Login = () => {
       )}
 
       <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 p-8 shadow-xl shadow-slate-200/40">
-        <div className="mb-6 rounded-3xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-600">
-          Demo login: <span className="font-semibold text-slate-900">lucky@gmail.com</span> /
-          <span className="font-semibold text-slate-900"> lucky123</span>
-        </div>
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-semibold text-slate-900">Welcome back</h2>
           <p className="mt-3 text-sm text-slate-500">Login to access your tasks and stay on top of your work.</p>
