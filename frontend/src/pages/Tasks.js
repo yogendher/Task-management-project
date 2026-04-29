@@ -189,7 +189,20 @@ const Tasks = () => {
               <h1 className="text-3xl font-semibold text-slate-900">Tasks</h1>
               <p className="mt-2 text-slate-600">Organize your work with smart filters, task cards, and quick status controls.</p>
             </div>
-            <div className="rounded-2xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700">{tasks.length} tasks</div>
+            <div className="flex items-center gap-4">
+              <div className="rounded-2xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700">{tasks.length} tasks</div>
+              <button
+                onClick={() => {
+                  clearForm();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  document.querySelector('input[name="title"]')?.focus();
+                }}
+                className="flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 shadow-sm"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                New Task
+              </button>
+            </div>
           </div>
         </div>
 

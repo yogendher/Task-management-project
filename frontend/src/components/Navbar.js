@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { FaSearch, FaBell, FaUser, FaPlus } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
-const Navbar = ({ onAddTask }) => {
+const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const [searchQuery, setSearchQuery] = useState('');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -29,13 +30,13 @@ const Navbar = ({ onAddTask }) => {
       </div>
 
       <div className="flex items-center space-x-4">
-        <button
-          onClick={onAddTask}
+        <Link
+          to="/tasks"
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2"
         >
           <FaPlus />
           <span>Add Task</span>
-        </button>
+        </Link>
 
         <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
           <FaBell />
