@@ -2,7 +2,22 @@ const Task = require('../models/Task');
 
 async function getTasks(req, res) {
   try {
-    const tasks = await Task.find({ user: req.user._id }).sort({ createdAt: -1 });
+    const { status, priority, search } = req.query;
+    const filter = { user: req.user._id };
+
+    if (status) {
+      filter.status = status;
+    }
+
+    if (priority) {
+      filter.priority = priority;
+    }
+
+    if (search) {
+      filter.title = { $regex: search, $options: 'i' };
+    }
+
+    const tasks = await Task.find(filter).sort({ dueDate: 1, createdAt: -1 });
     res.status(200).json({ tasks });
   } catch (error) {
     res.status(500).json({ message: 'Failed to load tasks', error: error.message });

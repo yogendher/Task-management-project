@@ -18,7 +18,7 @@ export const setAuthToken = (token) => {
 export const registerUser = (data) => api.post('/auth/register', data);
 export const loginUser = (data) => api.post('/auth/login', data);
 export const getUserProfile = () => api.get('/auth/profile');
-export const getTasks = () => api.get('/tasks');
+export const getTasks = (params) => api.get('/tasks', { params });
 export const createTask = (data) => api.post('/tasks', data);
 export const updateTask = (id, data) => api.put(`/tasks/${id}`, data);
 export const deleteTask = (id) => api.delete(`/tasks/${id}`);

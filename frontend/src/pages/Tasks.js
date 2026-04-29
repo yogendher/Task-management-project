@@ -6,10 +6,13 @@ const Tasks = () => {
   const [form, setForm] = useState({ title: '', description: '', priority: 'medium', dueDate: '' });
   const [message, setMessage] = useState(null);
   const [editingId, setEditingId] = useState(null);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('');
 
-  const fetchTasks = async () => {
+  const fetchTasks = async (params = {}) => {
     try {
-      const response = await getTasks();
+      const response = await getTasks(params);
       setTasks(response.data.tasks);
     } catch (error) {
       setMessage(error.response?.data?.message || 'Unable to load tasks');
@@ -46,6 +49,17 @@ const Tasks = () => {
     } catch (error) {
       setMessage(error.response?.data?.message || 'Unable to save task');
     }
+  };
+
+  const handleSearch = () => {
+    fetchTasks({ search, status: statusFilter, priority: priorityFilter });
+  };
+
+  const handleFilterClear = () => {
+    setSearch('');
+    setStatusFilter('');
+    setPriorityFilter('');
+    fetchTasks();
   };
 
   const handleEdit = (task) => {
@@ -118,6 +132,48 @@ const Tasks = () => {
         {message && <p className="error">{message}</p>}
       </div>
       <div className="tasks-list">
+        <div className="task-filters">
+          <div className="task-filter-group">
+            <label>
+              Search
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by title"
+              />
+            </label>
+          </div>
+          <div className="task-filter-group">
+            <label>
+              Status
+              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <option value="">All</option>
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </label>
+          </div>
+          <div className="task-filter-group">
+            <label>
+              Priority
+              <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)}>
+                <option value="">All</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </label>
+          </div>
+          <div className="task-filter-actions">
+            <button type="button" onClick={handleSearch}>
+              Apply
+            </button>
+            <button type="button" className="secondary-button" onClick={handleFilterClear}>
+              Clear
+            </button>
+          </div>
+        </div>
         <h2>Your Tasks</h2>
         {tasks.length === 0 ? (
           <p>No tasks yet. Create one to get started.</p>

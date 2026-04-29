@@ -161,6 +161,39 @@
   cursor: pointer;
 }
 
+.task-filter-group {
+  flex: 1;
+  min-width: 220px;
+}
+
+.task-filters {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.task-filter-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.task-filter-actions button {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 12px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.task-filter-actions button.secondary-button {
+  background: #6b7280;
+}
+
 .task-form-actions button.secondary-button {
   background: #6b7280;
 }
