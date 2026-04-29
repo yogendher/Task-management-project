@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createTask, deleteTask, getTasks, updateTask } from '../services/api';
+import { useLocation } from 'react-router-dom';
 
 const priorityOrder = { high: 1, medium: 2, low: 3 };
 
@@ -45,27 +46,35 @@ const sortTaskList = (tasks, sortBy) => {
 };
 
 const Tasks = () => {
+  const location = useLocation();
   const [tasks, setTasks] = useState([]);
   const [form, setForm] = useState({ title: '', description: '', priority: 'medium', status: 'todo', dueDate: '' });
-  const [message, setMessage] = useState(null);
+  const [notification, setNotification] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState(location.state?.status || '');
   const [priorityFilter, setPriorityFilter] = useState('');
   const [sortBy, setSortBy] = useState('dueDateAsc');
+
+  const triggerNotification = useCallback((type, text) => {
+    setNotification({ type, text });
+    setTimeout(() => setNotification(null), 4000);
+  }, []);
 
   const fetchTasks = useCallback(async (params = {}) => {
     try {
       const response = await getTasks(params);
       setTasks(sortTaskList(response.data.tasks, sortBy));
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Unable to load tasks');
+      triggerNotification('error', error.response?.data?.message || 'Unable to load tasks');
     }
-  }, [sortBy]);
+  }, [sortBy, triggerNotification]);
 
   useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+    // Use the initial status from location state if available
+    fetchTasks({ status: location.state?.status || '' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run only on mount to prevent overriding filters on sort change
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -74,7 +83,6 @@ const Tasks = () => {
   const clearForm = () => {
     setForm({ title: '', description: '', priority: 'medium', status: 'todo', dueDate: '' });
     setEditingId(null);
-    setMessage(null);
   };
 
   const handleSave = async (e) => {
@@ -85,13 +93,15 @@ const Tasks = () => {
         const response = await updateTask(editingId, form);
         setTasks((current) => current.map((task) => (task._id === editingId ? response.data.task : task)));
         clearForm();
+        triggerNotification('success', 'Task updated successfully!');
       } else {
         const response = await createTask(form);
         setTasks((current) => sortTaskList([response.data.task, ...current], sortBy));
         clearForm();
+        triggerNotification('success', 'New task created successfully!');
       }
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Unable to save task');
+      triggerNotification('error', error.response?.data?.message || 'Unable to save task');
     }
   };
 
@@ -115,7 +125,6 @@ const Tasks = () => {
       dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
     });
     setEditingId(task._id);
-    setMessage(null);
   };
 
   const handleStatusToggle = async (task) => {
@@ -123,8 +132,9 @@ const Tasks = () => {
     try {
       const response = await updateTask(task._id, { status: nextStatus });
       setTasks((current) => current.map((item) => (item._id === task._id ? response.data.task : item)));
+      triggerNotification('success', `Task moved to ${statusLabel[nextStatus]}`);
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Unable to update task');
+      triggerNotification('error', error.response?.data?.message || 'Unable to update task');
     }
   };
 
@@ -135,8 +145,9 @@ const Tasks = () => {
       if (editingId === id) {
         clearForm();
       }
+      triggerNotification('success', 'Task deleted successfully!');
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Unable to delete task');
+      triggerNotification('error', error.response?.data?.message || 'Unable to delete task');
     }
   };
 
@@ -147,7 +158,24 @@ const Tasks = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8 relative">
+      {/* Notification Toast */}
+      {notification && (
+        <div className={`fixed top-6 right-6 z-50 max-w-sm w-full p-4 rounded-2xl shadow-xl border transition-all duration-300 ${
+          notification.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800'
+        }`}>
+          <div className="flex items-center gap-3">
+            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${notification.type === 'success' ? 'bg-emerald-200 text-emerald-700' : 'bg-rose-200 text-rose-700'}`}>
+              {notification.type === 'success' ? '✓' : '✕'}
+            </div>
+            <div>
+              <p className="font-semibold">{notification.type === 'success' ? 'Success' : 'Error'}</p>
+              <p className="text-sm opacity-90">{notification.text}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mx-auto max-w-7xl space-y-6">
         <div className="rounded-[2rem] bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-200">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -163,7 +191,7 @@ const Tasks = () => {
           <section className="rounded-[2rem] bg-white p-6 shadow-xl shadow-slate-200/50 ring-1 ring-slate-200">
             <div className="mb-6">
               <h2 className="text-xl font-semibold text-slate-900">{editingId ? 'Edit Task' : 'Create a Task'}</h2>
-              <p className="mt-2 text-slate-500">{editingId ? 'Update your task details and status.' : 'Add a new task to keep your board moving.'}</p>
+              <p className="mt-2 text-slate-500">{editingId ? 'Modify the details below to update your task.' : 'Fill out the details below to add a new task to your board.'}</p>
             </div>
             <form className="space-y-5" onSubmit={handleSave}>
               <div>
@@ -189,6 +217,7 @@ const Tasks = () => {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">Priority</label>
+                  <p className="text-xs text-slate-500 mb-2">Set the importance level.</p>
                   <select
                     name="priority"
                     value={form.priority}
@@ -202,6 +231,7 @@ const Tasks = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">Status</label>
+                  <p className="text-xs text-slate-500 mb-2">Track the current progress phase.</p>
                   <select
                     name="status"
                     value={form.status}
@@ -242,13 +272,12 @@ const Tasks = () => {
                 )}
               </div>
             </form>
-            {message && <p className="mt-4 text-sm text-rose-600">{message}</p>}
           </section>
 
           <section className="rounded-[2rem] bg-white p-6 shadow-xl shadow-slate-200/50 ring-1 ring-slate-200">
             <div className="mb-6">
               <h2 className="text-xl font-semibold text-slate-900">Filters</h2>
-              <p className="mt-2 text-slate-500">Narrow your task list by status, priority, or keyword.</p>
+              <p className="mt-2 text-slate-500">Quickly find specific tasks by narrowing down your list using the filters below.</p>
             </div>
             <div className="space-y-4">
               <div>
@@ -310,7 +339,10 @@ const Tasks = () => {
 
         <section className="rounded-[2rem] bg-white p-6 shadow-xl shadow-slate-200/50 ring-1 ring-slate-200">
           {tasks.length === 0 ? (
-            <p className="text-slate-600">No tasks yet. Create one to get started.</p>
+            <div className="text-center py-10">
+              <h3 className="text-lg font-medium text-slate-900">No tasks found</h3>
+              <p className="mt-2 text-slate-500">We couldn't find any tasks matching your current view. Try clearing your filters or create a new task to get started.</p>
+            </div>
           ) : (
             <div className="space-y-4">
               {tasks.map((task) => (
