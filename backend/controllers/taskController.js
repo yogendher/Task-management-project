@@ -26,7 +26,7 @@ async function getTasks(req, res) {
 
 async function createTask(req, res) {
   try {
-    const { title, description, status, priority, dueDate } = req.body;
+    const { title, description, status, priority, dueDate, tags } = req.body;
     if (!title) {
       return res.status(400).json({ message: 'Task title is required' });
     }
@@ -35,9 +35,10 @@ async function createTask(req, res) {
       user: req.user._id,
       title: title.trim(),
       description: description?.trim(),
-      status: status || 'pending',
+      status: status || 'todo',
       priority: priority || 'medium',
       dueDate: dueDate ? new Date(dueDate) : undefined,
+      tags: tags || [],
     });
 
     res.status(201).json({ task });
@@ -54,7 +55,7 @@ async function updateTask(req, res) {
       return res.status(404).json({ message: 'Task not found' });
     }
 
-    const updates = ['title', 'description', 'status', 'priority', 'dueDate'];
+    const updates = ['title', 'description', 'status', 'priority', 'dueDate', 'tags'];
     updates.forEach((field) => {
       if (req.body[field] !== undefined) {
         task[field] = field === 'dueDate' ? new Date(req.body[field]) : req.body[field];
