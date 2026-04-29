@@ -81,6 +81,47 @@
   cursor: pointer;
 }
 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.summary-card {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.summary-card h3 {
+  margin-bottom: 0.75rem;
+  color: #0f172a;
+}
+
+.summary-card p {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.recent-tasks {
+  margin-top: 1.5rem;
+}
+
+.recent-tasks h3 {
+  margin-bottom: 1rem;
+}
+
+.recent-tasks .task-card {
+  padding: 1rem;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
 .tasks-page {
   width: min(980px, 100%);
   display: grid;

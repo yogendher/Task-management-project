@@ -7,7 +7,7 @@ A MERN-based task management application with authentication and a strong founda
 This app is designed to showcase a full-stack MERN project with:
 - User authentication using JWT and bcrypt
 - Protected backend routes
-- A future task management dashboard and user profile features
+- Task management dashboard and CRUD features
 - Deployment-ready backend and frontend architecture
 
 ## Tech Stack
