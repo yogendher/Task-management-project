@@ -189,7 +189,8 @@ const Tasks = () => {
           </div>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[360px_1fr]">
+      <div className="grid gap-6 xl:grid-cols-[360px_1fr] items-start">
+        <div className="space-y-6 flex flex-col">
           <section className="rounded-[2rem] bg-white p-6 shadow-xl shadow-slate-200/50 ring-1 ring-slate-200">
             <div className="mb-6">
               <h2 className="text-xl font-semibold text-slate-900">{editingId ? 'Edit Task' : 'Create a Task'}</h2>
@@ -389,6 +390,7 @@ const Tasks = () => {
             </div>
           )}
         </section>
+      </div>
       </div>
     </div>
   );
