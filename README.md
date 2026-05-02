@@ -12,26 +12,37 @@ This app is designed to showcase a full-stack MERN project with:
 
 ## Tech Stack
 
+- Frontend: React, Tailwind CSS, React Router, Recharts, @dnd-kit, React Calendar
 - Backend: Node.js, Express, MongoDB, Mongoose
 - Authentication: JWT, bcrypt
-- Frontend: React (to be implemented)
 - Deployment: Render for backend, Vercel for frontend, MongoDB Atlas for database
 
-## Current Backend Features
+## Features
 
 - User registration (`POST /api/auth/register`)
 - User login (`POST /api/auth/login`)
-- Protected user profile route (`GET /api/auth/profile`)
-- Task management CRUD API (`GET /api/tasks`, `POST /api/tasks`, `PUT /api/tasks/:id`, `DELETE /api/tasks/:id`)
+- Task management CRUD API
+- Kanban Board for drag-and-drop task status updates
+- Calendar View to see tasks by due dates
+- Analytics Dashboard with charts for task status and priority
+- Settings page to manage profile and preferences
+- Responsive and modern UI powered by Tailwind CSS
 
 ## Structure
 
 - `backend/`
-  - `controllers/` - auth controller functions
+  - `controllers/` - Auth & Task controller functions
   - `middleware/` - JWT auth middleware
-  - `models/` - Mongoose user schema
-  - `routes/` - auth route definitions
+  - `models/` - Mongoose schemas (User, Task)
+  - `routes/` - API route definitions
   - `server.js` - Express server setup
+- `frontend/`
+  - `src/`
+    - `components/` - Reusable UI components
+    - `context/` - Auth Context for global state
+    - `pages/` - App pages (Dashboard, Tasks, Board, etc.)
+    - `services/` - Axios API service integrations
+    - `App.js` - Main application entry point
 
 ## Setup Instructions
 
@@ -59,21 +70,15 @@ This app is designed to showcase a full-stack MERN project with:
    npm start
    ```
 
-## Frontend Plan
-
-The frontend is planned as a React app in the `frontend/` folder, with:
-- Login/Register pages
-- Auth context and token storage
-- Protected routes
-- Task management dashboard
-- Responsive UI
+5. Open a new terminal, install frontend dependencies, and start the React app:
+   ```bash
+   cd frontend
+   npm install
+   npm start
+   ```
 
 ## Deployment Plan
 
 - Backend: Deploy to Render
 - Frontend: Deploy to Vercel
 - Database: MongoDB Atlas
-
-## Notes
-
-This repository is currently set up with backend authentication and ready for frontend development. The next steps are to build the React frontend and task management features.
